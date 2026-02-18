@@ -16,7 +16,6 @@ public class SavedLink {
     public long createdAt;
 
     public SavedLink(String link, long createdAt) {
-        this.id = id;
         this.link = link;
         this.createdAt = createdAt;
     }
