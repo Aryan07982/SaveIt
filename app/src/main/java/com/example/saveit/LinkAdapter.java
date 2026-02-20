@@ -1,7 +1,10 @@
 package com.example.saveit;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
@@ -30,12 +33,28 @@ public class LinkAdapter extends RecyclerView.Adapter<LinkViewHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull LinkViewHolder holder, int position) {
+
         SavedLink currentItem = savedLinks.get(position);
+
         long timeStamp = currentItem.getCreatedAt();
         String formattedDate = java.text.DateFormat.getDateTimeInstance().format(new java.util.Date(timeStamp));
 
         holder.dateview.setText(formattedDate);
         holder.linkview.setText(currentItem.getLink());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String url = currentItem.getLink();
+
+                if (!url.startsWith("http://") && !url.startsWith("https://")) {
+                    url = "https://" + url;
+                }
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentItem.getLink()));
+                context.startActivity(intent);
+            }
+        });
 
     }
 

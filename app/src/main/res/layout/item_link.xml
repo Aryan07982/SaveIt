@@ -4,8 +4,9 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="6dp"
     android:layout_marginBottom="6dp"
-    android:layout_marginLeft="8dp"
-    android:layout_marginRight="8dp"
+    android:layout_marginLeft="12dp"
+    android:layout_marginRight="12dp"
+    android:padding="10dp"
     xmlns:tools="http://schemas.android.com/tools">
 
 
@@ -14,13 +15,11 @@
         android:layout_height="wrap_content"
         android:id="@+id/link"
         android:textSize="15sp"
-        android:textColor="@color/black"
         tools:text="https://www.youtube.com/watch?v=TAEbP_ccjsk"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/date"
-        android:textColor="@color/black"
         android:layout_below="@+id/link"
         android:layout_marginTop="4dp"
         tools:text="01/01/26"/>

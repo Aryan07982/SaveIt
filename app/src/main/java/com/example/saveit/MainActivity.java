@@ -58,7 +58,8 @@ public class MainActivity extends AppCompatActivity {
                 String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
                 if (sharedText != null) {
 
-                    new bgThread(sharedText).start();
+                    String cleanUrl = extractUrl(sharedText);
+                    new bgThread(cleanUrl).start();
                     Toast.makeText(this, "Link Saved", Toast.LENGTH_LONG).show();
                 }
             }
@@ -97,6 +98,18 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private String extractUrl(String input) {
+        if (input == null) return null;
+
+        String[] words = input.split("\\s+");
+        for (String word : words) {
+            if (word.startsWith("http://") || word.startsWith("https://")) {
+                return word;
+            }
+        }
+        return input;
     }
 }
 
