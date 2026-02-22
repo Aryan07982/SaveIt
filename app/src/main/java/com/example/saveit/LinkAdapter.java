@@ -62,4 +62,8 @@ public class LinkAdapter extends RecyclerView.Adapter<LinkViewHolder>{
     public int getItemCount() {
         return savedLinks.size();
     }
+
+    public SavedLink getLinkAt(int position){
+        return savedLinks.get(position);
+    }
 }

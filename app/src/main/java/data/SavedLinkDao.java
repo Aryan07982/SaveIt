@@ -11,9 +11,11 @@ import java.util.List;
 public interface SavedLinkDao {
 
     @Insert
-    void insertRecord(SavedLink links);
+    void insertRecord(SavedLink link);
 
     @Query("SELECT * FROM savedlink ORDER BY createdAt DESC")
     List<SavedLink> getAll();
 
+    @Delete
+    void deleteRecord(SavedLink link);
 }

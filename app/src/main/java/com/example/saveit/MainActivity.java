@@ -3,14 +3,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
+import java.io.IOException;
 import java.util.List;
 
 import data.AppDatabase;
@@ -20,6 +22,7 @@ import data.SavedLinkDao;
 public class MainActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
+    LinkAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        new ItemTouchHelper(simpleCallback).attachToRecyclerView(recyclerView);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -39,7 +43,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         handleIntent(getIntent());
-        new bgThread2().start();
+        new dbThreadDisplay().start();
+        new ItemTouchHelper(simpleCallback).attachToRecyclerView(recyclerView);
     }
 
     @Override
@@ -59,29 +64,30 @@ public class MainActivity extends AppCompatActivity {
                 if (sharedText != null) {
 
                     String cleanUrl = extractUrl(sharedText);
-                    new bgThread(cleanUrl).start();
+                    new dbThreadInsert(cleanUrl).start();
                     Toast.makeText(this, "Link Saved", Toast.LENGTH_LONG).show();
                 }
             }
         }
     }
 
-    class bgThread extends Thread{
-        public String sharedText;
-        public bgThread(String sharedText){
-            this.sharedText = sharedText;
+    class dbThreadInsert extends Thread{
+        public String url;
+        public dbThreadInsert(String sharedText){
+            this.url = sharedText;
         }
 
         public void run(){
             super.run();
             AppDatabase db = AppDatabase.getDatabase(getApplicationContext());
             SavedLinkDao savedLinkDao = db.savedLinkDao();
-            savedLinkDao.insertRecord(new SavedLink(sharedText, System.currentTimeMillis()));
-            new bgThread2().start();
+
+            savedLinkDao.insertRecord(new SavedLink(url, System.currentTimeMillis()));
+            new dbThreadDisplay().start();
         }
     }
 
-    class bgThread2 extends Thread{
+    class dbThreadDisplay extends Thread{
 
         @Override
         public void run(){
@@ -93,10 +99,27 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    LinkAdapter adapter = new LinkAdapter(MainActivity.this, linkTable);
+                    adapter = new LinkAdapter(MainActivity.this, linkTable);
                     recyclerView.setAdapter(adapter);
                 }
             });
+        }
+    }
+
+    class dbThreadDelete extends Thread{
+        SavedLink linkToDelete;
+
+        public dbThreadDelete(SavedLink linkToDelete){
+            this.linkToDelete = linkToDelete;
+        }
+
+        @Override
+        public void run(){
+            super.run();
+            AppDatabase db = AppDatabase.getDatabase(getApplicationContext());
+            SavedLinkDao savedLinkDao = db.savedLinkDao();
+            savedLinkDao.deleteRecord(linkToDelete);
+            new dbThreadDisplay().start();
         }
     }
 
@@ -111,6 +134,20 @@ public class MainActivity extends AppCompatActivity {
         }
         return input;
     }
+
+    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            int position = viewHolder.getAdapterPosition();
+            SavedLink linkToDelete = adapter.getLinkAt(position);
+            new dbThreadDelete(linkToDelete).start();
+        }
+    };
 }
 
 

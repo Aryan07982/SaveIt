@@ -44,6 +44,8 @@ dependencies {
     implementation("androidx.room:room-runtime:$room_version")
     annotationProcessor("androidx.room:room-compiler:${room_version}")
 
+    implementation("org.jsoup:jsoup:1.16.1")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
