@@ -9,12 +9,19 @@
     android:padding="10dp"
     xmlns:tools="http://schemas.android.com/tools">
 
-
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/title"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        tools:text="Top 10 Anime"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/link"
-        android:textSize="15sp"
+        android:layout_below="@+id/title"
+        android:textSize="10sp"
         tools:text="https://www.youtube.com/watch?v=TAEbP_ccjsk"/>
     <TextView
         android:layout_width="match_parent"
@@ -22,6 +29,7 @@
         android:id="@+id/date"
         android:layout_below="@+id/link"
         android:layout_marginTop="4dp"
+        android:textSize="11sp"
         tools:text="01/01/26"/>
 
 </RelativeLayout>

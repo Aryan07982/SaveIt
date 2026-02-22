@@ -8,10 +8,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class LinkViewHolder extends RecyclerView.ViewHolder {
 
-    TextView linkview, dateview;
+    TextView linkview, dateview, titleview;
     public LinkViewHolder(@NonNull View itemView) {
         super(itemView);
         linkview = itemView.findViewById(R.id.link);
         dateview = itemView.findViewById(R.id.date);
+        titleview = itemView.findViewById(R.id.title);
     }
 }

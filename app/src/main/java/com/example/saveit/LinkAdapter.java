@@ -41,6 +41,7 @@ public class LinkAdapter extends RecyclerView.Adapter<LinkViewHolder>{
 
         holder.dateview.setText(formattedDate);
         holder.linkview.setText(currentItem.getLink());
+        holder.titleview.setText(currentItem.getTitle());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -73,8 +73,8 @@ public class MainActivity extends AppCompatActivity {
 
     class dbThreadInsert extends Thread{
         public String url;
-        public dbThreadInsert(String sharedText){
-            this.url = sharedText;
+        public dbThreadInsert(String url){
+            this.url = url;
         }
 
         public void run(){
@@ -82,7 +82,18 @@ public class MainActivity extends AppCompatActivity {
             AppDatabase db = AppDatabase.getDatabase(getApplicationContext());
             SavedLinkDao savedLinkDao = db.savedLinkDao();
 
-            savedLinkDao.insertRecord(new SavedLink(url, System.currentTimeMillis()));
+            try {
+
+                org.jsoup.nodes.Document doc = org.jsoup.Jsoup.connect(url)
+                        .userAgent("Mozilla/5.0")
+                        .get();
+                String websiteTitle = doc.title();
+                savedLinkDao.insertRecord(new SavedLink(url, websiteTitle, System.currentTimeMillis()));
+
+            } catch (IOException e) {
+
+                savedLinkDao.insertRecord(new SavedLink(url, "No Title Found", System.currentTimeMillis()));
+            }
             new dbThreadDisplay().start();
         }
     }

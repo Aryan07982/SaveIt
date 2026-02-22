@@ -12,11 +12,15 @@ public class SavedLink {
     @ColumnInfo(name = "link")
     public String link;
 
+    @ColumnInfo(name = "title")
+    public String title;
+
     @ColumnInfo(name = "createdAt")
     public long createdAt;
 
-    public SavedLink(String link, long createdAt) {
+    public SavedLink(String link, String title, long createdAt) {
         this.link = link;
+        this.title = title;
         this.createdAt = createdAt;
     }
 
@@ -42,5 +46,13 @@ public class SavedLink {
 
     public void setLink(String link) {
         this.link = link;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }
